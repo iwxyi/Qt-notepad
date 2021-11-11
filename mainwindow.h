@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSettings>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -62,6 +63,8 @@ private slots:
 
     void on_actionAbout_A_triggered();
 
+    void on_plainTextEdit_cursorPositionChanged();
+
 private:
     void openFile(QString path);
     bool isModified() const;
@@ -78,5 +81,11 @@ private:
     QString filePath;
     QString fileName;
     QString savedContent;
+    int zoomSize = 100;
+
+    QLabel* posLabel;
+    QLabel* zoomLabel;
+    QLabel* lineLabel;
+    QLabel* codecLabel;
 };
 #endif // MAINWINDOW_H

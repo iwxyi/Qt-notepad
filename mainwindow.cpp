@@ -5,6 +5,7 @@
 #include <QDesktopServices>
 #include <QDateTime>
 #include <QFontDialog>
+#include <QTextBlock>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -34,6 +35,17 @@ MainWindow::MainWindow(QWidget *parent)
         f.fromString(fs);
         ui->plainTextEdit->setFont(f);
     }
+
+
+    posLabel = new QLabel("第 1 行，第 1 列", this);
+    zoomLabel = new QLabel("100%", this);
+    lineLabel = new QLabel("Windows (CRLF)", this);
+    codecLabel = new QLabel("GBK", this);
+    ui->statusbar->addPermanentWidget(new QLabel(this), 6);
+    ui->statusbar->addPermanentWidget(posLabel, 3);
+    ui->statusbar->addPermanentWidget(zoomLabel, 1);
+    ui->statusbar->addPermanentWidget(lineLabel, 3);
+    ui->statusbar->addPermanentWidget(codecLabel, 1);
 }
 
 MainWindow::~MainWindow()
@@ -269,12 +281,22 @@ void MainWindow::on_actionFont_F_triggered()
 
 void MainWindow::on_actionZoom_In_I_triggered()
 {
+    if (zoomSize >= 500)
+        return ;
+
     ui->plainTextEdit->zoomIn(1);
+    zoomSize += 10;
+    zoomLabel->setText(QString::number(zoomSize) + "%");
 }
 
 void MainWindow::on_actionZoom_Out_O_triggered()
 {
+    if (zoomSize <= 10)
+        return ;
+
     ui->plainTextEdit->zoomOut(1);
+    zoomSize -= 10;
+    zoomLabel->setText(QString::number(zoomSize) + "%");
 }
 
 void MainWindow::on_actionZoom_Default_triggered()
@@ -290,6 +312,9 @@ void MainWindow::on_actionZoom_Default_triggered()
     {
         ui->plainTextEdit->setFont(qApp->font());
     }
+
+    zoomSize = 100;
+    zoomLabel->setText(QString::number(zoomSize) + "%");
 }
 
 void MainWindow::on_actionStatus_Bar_S_triggered()
@@ -311,4 +336,17 @@ void MainWindow::on_actionStatus_Bar_S_triggered()
 void MainWindow::on_actionAbout_A_triggered()
 {
     QMessageBox::about(this, "关于", "高仿 Windows 记事本的 Qt 实现方案");
+}
+
+void MainWindow::on_plainTextEdit_cursorPositionChanged()
+{
+    QTextCursor tc = ui->plainTextEdit->textCursor();
+
+    QTextLayout* ly = tc.block().layout();
+    int posInBlock = tc.position() - tc.block().position(); // 当前光标在block内的相对位置
+    int line = ly->lineForTextPosition(posInBlock).lineNumber() + tc.block().firstLineNumber();
+
+    int col = tc.columnNumber(); // 第几列
+    // int row = tc.blockNumber(); // 第几段，无法识别WordWrap的第几行
+    posLabel->setText("第 " + QString::number(line + 1) + " 行，第 " + QString::number(col + 1) + " 列");
 }
