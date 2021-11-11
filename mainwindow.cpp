@@ -21,6 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
         ui->actionWord_Wrap_W->setChecked(false);
         ui->plainTextEdit->setWordWrapMode(QTextOption::NoWrap);
     }
+    if (!settings.value("statusBar", true).toBool())
+    {
+        this->statusBar()->hide();
+        ui->actionStatus_Bar_S->setChecked(false);
+    }
 
     QString fs;
     if (!(fs = settings.value("font").toString()).isEmpty())
@@ -260,4 +265,50 @@ void MainWindow::on_actionFont_F_triggered()
 
     ui->plainTextEdit->setFont(f);
     settings.setValue("font", f.toString());
+}
+
+void MainWindow::on_actionZoom_In_I_triggered()
+{
+    ui->plainTextEdit->zoomIn(1);
+}
+
+void MainWindow::on_actionZoom_Out_O_triggered()
+{
+    ui->plainTextEdit->zoomOut(1);
+}
+
+void MainWindow::on_actionZoom_Default_triggered()
+{
+    QString fs;
+    if (!(fs = settings.value("font").toString()).isEmpty())
+    {
+        QFont f;
+        f.fromString(fs);
+        ui->plainTextEdit->setFont(f);
+    }
+    else
+    {
+        ui->plainTextEdit->setFont(qApp->font());
+    }
+}
+
+void MainWindow::on_actionStatus_Bar_S_triggered()
+{
+    if (this->statusBar()->isHidden())
+    {
+        this->statusBar()->show();
+        ui->actionStatus_Bar_S->setChecked(true);
+        settings.setValue("statusBar", true);
+    }
+    else
+    {
+        this->statusBar()->hide();
+        ui->actionStatus_Bar_S->setChecked(false);
+        settings.setValue("statusBar", false);
+    }
+}
+
+void MainWindow::on_actionAbout_A_triggered()
+{
+    QMessageBox::about(this, "关于", "高仿 Windows 记事本的 Qt 实现方案");
 }

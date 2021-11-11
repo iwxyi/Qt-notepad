@@ -52,6 +52,16 @@ private slots:
 
     void on_actionFont_F_triggered();
 
+    void on_actionZoom_In_I_triggered();
+
+    void on_actionZoom_Out_O_triggered();
+
+    void on_actionZoom_Default_triggered();
+
+    void on_actionStatus_Bar_S_triggered();
+
+    void on_actionAbout_A_triggered();
+
 private:
     void openFile(QString path);
     bool isModified() const;
