@@ -93,8 +93,7 @@ void MainWindow::openFile(QString path)
 
 bool MainWindow::isModified() const
 {
-    bool m = ui->plainTextEdit->toPlainText() != savedContent;
-    return m;
+    return ui->plainTextEdit->toPlainText() != savedContent;
 }
 
 /**

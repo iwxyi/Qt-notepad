@@ -97,9 +97,11 @@ private slots:
 
     void on_actionPrint_triggered();
 
-private:
+public:
     void openFile(QString path);
     bool isModified() const;
+
+private:
     bool askSave();
     void updateWindowTitle();
     void createFindDialog();
