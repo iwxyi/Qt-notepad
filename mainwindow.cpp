@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QFontDialog>
 #include <QTextBlock>
+#include <QFileIconProvider>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -28,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->actionStatus_Bar_S->setChecked(false);
     }
 
+    // 恢复字体
     QString fs;
     if (!(fs = settings.value("font").toString()).isEmpty())
     {
@@ -36,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->plainTextEdit->setFont(f);
     }
 
-
+    // 状态栏
     posLabel = new QLabel("第 1 行，第 1 列", this);
     zoomLabel = new QLabel("100%", this);
     lineLabel = new QLabel("Windows (CRLF)", this);
@@ -46,6 +48,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusbar->addPermanentWidget(zoomLabel, 1);
     ui->statusbar->addPermanentWidget(lineLabel, 3);
     ui->statusbar->addPermanentWidget(codecLabel, 1);
+
+    // 设置为系统notepad图标
+    QFileIconProvider ip;
+    QIcon icon = ip.icon(QFileInfo("C:\\Windows\\System32\\notepad.exe"));
+    qApp->setWindowIcon(icon);
 }
 
 MainWindow::~MainWindow()
@@ -175,6 +182,14 @@ void MainWindow::createFindDialog()
     });
 }
 
+void MainWindow::showEvent(QShowEvent *e)
+{
+    this->restoreGeometry(settings.value("mainwindow/geometry").toByteArray());
+    this->restoreState(settings.value("mainwindow/state").toByteArray());
+
+    QMainWindow::showEvent(e);
+}
+
 void MainWindow::closeEvent(QCloseEvent *e)
 {
     if (!askSave())
@@ -182,6 +197,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
         e->ignore();
         return ;
     }
+    settings.setValue("mainwindow/geometry", this->saveGeometry());
+    settings.setValue("mainwindow/state", this->saveState());
 
     QMainWindow::closeEvent(e);
 }
@@ -191,6 +208,39 @@ void MainWindow::on_plainTextEdit_textChanged()
     if (fileName.isEmpty())
         fileName = "无标题";
     updateWindowTitle();
+
+    bool empty = ui->plainTextEdit->toPlainText().isEmpty();
+    ui->actionFind_F->setEnabled(!empty);
+    ui->actionReplace_R->setEnabled(!empty);
+    ui->actionFind_Next_N->setEnabled(!empty && findDialog && findDialog->isVisible());
+    ui->actionFind_Prev_V->setEnabled(!empty && findDialog && findDialog->isVisible());
+}
+
+void MainWindow::on_plainTextEdit_cursorPositionChanged()
+{
+    QTextCursor tc = ui->plainTextEdit->textCursor();
+
+    QTextLayout* ly = tc.block().layout();
+    int posInBlock = tc.position() - tc.block().position(); // 当前光标在block内的相对位置
+    int line = ly->lineForTextPosition(posInBlock).lineNumber() + tc.block().firstLineNumber();
+
+    int col = tc.columnNumber(); // 第几列
+    // int row = tc.blockNumber(); // 第几段，无法识别WordWrap的第几行
+    posLabel->setText("第 " + QString::number(line + 1) + " 行，第 " + QString::number(col + 1) + " 列");
+}
+
+void MainWindow::on_plainTextEdit_undoAvailable(bool b)
+{
+    ui->actionUndo_U->setEnabled(b);
+}
+
+void MainWindow::on_plainTextEdit_selectionChanged()
+{
+    bool selected = ui->plainTextEdit->textCursor().hasSelection();
+    ui->actionSearch_By_Bing->setEnabled(selected);
+    ui->actionCut_T->setEnabled(selected);
+    ui->actionCopy_C->setEnabled(selected);
+    ui->actionDelete_L->setEnabled(selected);
 }
 
 void MainWindow::on_actionNew_triggered()
@@ -204,7 +254,7 @@ void MainWindow::on_actionNew_triggered()
 void MainWindow::on_actionNew_Window_triggered()
 {
     QProcess p(this);
-    p.startDetached(QApplication::applicationFilePath());
+    p.startDetached(QApplication::applicationFilePath(), {"-new"});
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -212,7 +262,8 @@ void MainWindow::on_actionOpen_triggered()
     if (!askSave())
         return ;
 
-    QString path = QFileDialog::getOpenFileName(this, "打开", "", "*.txt");
+    QString recentPath = settings.value("recent/filePath").toString();
+    QString path = QFileDialog::getOpenFileName(this, "打开", recentPath, "*.txt");
     if (path.isEmpty())
         return ;
 
@@ -223,9 +274,11 @@ bool MainWindow::on_actionSave_triggered()
 {
     if (filePath.isEmpty()) // 没有路径，另存为
     {
-        QString path = QFileDialog::getSaveFileName(this, "另存为", "", "*.txt");
+        QString recentPath = settings.value("recent/filePath").toString();
+        QString path = QFileDialog::getSaveFileName(this, "另存为", recentPath, "*.txt");
         if (path.isEmpty())
             return false;
+        settings.setValue("recent/filePath", path);
         filePath = path;
         fileName = QFileInfo(path).baseName();
     }
@@ -398,19 +451,6 @@ void MainWindow::on_actionAbout_A_triggered()
     QMessageBox::about(this, "关于", "高仿 Windows 记事本的 Qt 实现方案");
 }
 
-void MainWindow::on_plainTextEdit_cursorPositionChanged()
-{
-    QTextCursor tc = ui->plainTextEdit->textCursor();
-
-    QTextLayout* ly = tc.block().layout();
-    int posInBlock = tc.position() - tc.block().position(); // 当前光标在block内的相对位置
-    int line = ly->lineForTextPosition(posInBlock).lineNumber() + tc.block().firstLineNumber();
-
-    int col = tc.columnNumber(); // 第几列
-    // int row = tc.blockNumber(); // 第几段，无法识别WordWrap的第几行
-    posLabel->setText("第 " + QString::number(line + 1) + " 行，第 " + QString::number(col + 1) + " 列");
-}
-
 void MainWindow::on_actionFind_F_triggered()
 {
     if (!findDialog)
@@ -474,4 +514,14 @@ void MainWindow::on_actionReplace_R_triggered()
 void MainWindow::on_actionGoto_G_triggered()
 {
 
+}
+
+void MainWindow::on_actionHelp_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/iwxyi/Qt-notepad"));
+}
+
+void MainWindow::on_actionFeedback_F_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/iwxyi/Qt-notepad/issues"));
 }

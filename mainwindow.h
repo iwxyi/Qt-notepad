@@ -21,6 +21,12 @@ public:
 private slots:
     void on_plainTextEdit_textChanged();
 
+    void on_plainTextEdit_undoAvailable(bool b);
+
+    void on_plainTextEdit_selectionChanged();
+
+    void on_plainTextEdit_cursorPositionChanged();
+
     void on_actionNew_triggered();
 
     void on_actionNew_Window_triggered();
@@ -30,7 +36,6 @@ private slots:
     bool on_actionSave_triggered();
 
     bool on_actionSave_As_triggered();
-
 
     void on_actionExit_triggered();
 
@@ -64,8 +69,6 @@ private slots:
 
     void on_actionAbout_A_triggered();
 
-    void on_plainTextEdit_cursorPositionChanged();
-
     void on_actionFind_F_triggered();
 
     void on_actionFind_Next_N_triggered();
@@ -76,6 +79,10 @@ private slots:
 
     void on_actionGoto_G_triggered();
 
+    void on_actionHelp_triggered();
+
+    void on_actionFeedback_F_triggered();
+
 private:
     void openFile(QString path);
     bool isModified() const;
@@ -84,6 +91,7 @@ private:
     void createFindDialog();
 
 protected:
+    void showEvent(QShowEvent* e) override;
     void closeEvent(QCloseEvent* e) override;
 
 private:
