@@ -32,6 +32,9 @@
     </property>
     <item>
      <widget class="QPlainTextEdit" name="plainTextEdit">
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
       <property name="styleSheet">
        <string notr="true">QPlainTextEdit
 {
@@ -393,6 +396,38 @@
    </property>
    <property name="text">
     <string>自动换行(&amp;W)</string>
+   </property>
+  </action>
+  <action name="actionRead_Direction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>从右到左的阅读顺序(&amp;R)</string>
+   </property>
+  </action>
+  <action name="actionRead_Mode">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>关闭输入法(&amp;L)</string>
+   </property>
+  </action>
+  <action name="actionShow_Unicode_Control_Chars">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>显示 Unicode 控制字符</string>
+   </property>
+  </action>
+  <action name="actionReselect_Chinese">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>汉字重选(&amp;R)</string>
    </property>
   </action>
  </widget>

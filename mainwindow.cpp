@@ -241,6 +241,7 @@ void MainWindow::on_plainTextEdit_selectionChanged()
     ui->actionCut_T->setEnabled(selected);
     ui->actionCopy_C->setEnabled(selected);
     ui->actionDelete_L->setEnabled(selected);
+    ui->actionReselect_Chinese->setEnabled(selected);
 }
 
 void MainWindow::on_actionNew_triggered()
@@ -513,7 +514,8 @@ void MainWindow::on_actionReplace_R_triggered()
 
 void MainWindow::on_actionGoto_G_triggered()
 {
-
+    // TODO:转到
+    // 我的记事本这个选项一直是灰色的
 }
 
 void MainWindow::on_actionHelp_triggered()
@@ -524,4 +526,102 @@ void MainWindow::on_actionHelp_triggered()
 void MainWindow::on_actionFeedback_F_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/iwxyi/Qt-notepad/issues"));
+}
+
+void MainWindow::on_plainTextEdit_customContextMenuRequested(const QPoint&)
+{
+    QMenu* menu = new QMenu();
+
+    QMenu* insertUnicodeControlCharsMenu = new QMenu("插入 Unicode 控制字符(&I)", menu);
+    QList<QPair<QString, QString>> unicodeControlChars{
+        {"LRM", "&Left-to-right mark"},
+        {"RLM", "&Right-to-left mark"},
+        {"ZWJ", "Zero width joiner"},
+        {"ZWNJ", "Zero width &non-joiner"},
+        {"LRE", "Start of left-to-right &embedding"},
+        {"RLE", "Start of right-to-left e&mbedding"},
+        {"LRO", "Start of left-to-right &override"},
+        {"RLO", "Start of right-to-left o&verride"},
+        {"PDF", "&Pop directional formatting"},
+        {"NADS", "N&ational digit shapes substitution"},
+        {"NODS", "Nominal (European) &digit shapes"},
+        {"ASS", "Activate &symmetric swapping"},
+        {"ISS", "Inhibit s&ymmetric swapping"},
+        {"AAFS", "Activate Arabic &form shaping"},
+        {"IAFS", "Inhibit Arabic form s&haping"},
+        {"RS", "Record Separator (&Block separator)"},
+        {"US", "Unit Separator (&Segment separator)"}
+    };
+    for (auto p: unicodeControlChars)
+    {
+        QAction* action = new QAction(p.first, insertUnicodeControlCharsMenu);
+        action->setToolTip(p.second);
+        // TODO: 把提示也显示出来
+        connect(action, &QAction::triggered, ui->plainTextEdit, [=]{
+            // TODO: 插入 Unicode 控制字符
+            // ui->plainTextEdit->insertPlainText("\u202c");
+        });
+        insertUnicodeControlCharsMenu->addAction(action);
+    }
+
+    menu->addAction(ui->actionUndo_U);
+    menu->addSeparator();
+    menu->addAction(ui->actionCut_T);
+    menu->addAction(ui->actionCopy_C);
+    menu->addAction(ui->actionPaste_P);
+    menu->addAction(ui->actionDelete_L);
+    menu->addSeparator();
+    menu->addAction(ui->actionSelect_All_A);
+    menu->addSeparator();
+    menu->addAction(ui->actionRead_Direction);
+    menu->addAction(ui->actionShow_Unicode_Control_Chars);
+    menu->addMenu(insertUnicodeControlCharsMenu);
+    menu->addSeparator();
+    menu->addAction(ui->actionRead_Mode);
+    menu->addAction(ui->actionReselect_Chinese);
+    menu->addSeparator();
+    menu->addAction(ui->actionSearch_By_Bing);
+
+    menu->exec(QCursor::pos());
+    menu->deleteLater();
+}
+
+void MainWindow::on_actionRead_Direction_triggered()
+{
+    auto direction = ui->actionRead_Direction->isChecked() ? Qt::RightToLeft : Qt::LeftToRight;
+    ui->plainTextEdit->setLayoutDirection(direction);
+}
+
+void MainWindow::on_actionRead_Mode_triggered()
+{
+    if (ui->plainTextEdit->isReadOnly())
+    {
+        ui->plainTextEdit->setReadOnly(false);
+        ui->actionRead_Mode->setText("关闭输入法(&L)");
+    }
+    else
+    {
+        ui->plainTextEdit->setReadOnly(true);
+        ui->actionRead_Mode->setText("打开输入法(&O)");
+    }
+}
+
+void MainWindow::on_actionShow_Unicode_Control_Chars_triggered()
+{
+    // TODO: 显示 Unicode 控制字符
+}
+
+void MainWindow::on_actionReselect_Chinese_triggered()
+{
+    // TODO: 汉字重选
+}
+
+void MainWindow::on_actionPrefrence_triggered()
+{
+    // TODO: 页面设置
+}
+
+void MainWindow::on_actionPrint_triggered()
+{
+    // TODO: 打印
 }

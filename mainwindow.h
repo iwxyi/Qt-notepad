@@ -83,6 +83,20 @@ private slots:
 
     void on_actionFeedback_F_triggered();
 
+    void on_plainTextEdit_customContextMenuRequested(const QPoint &);
+
+    void on_actionRead_Direction_triggered();
+
+    void on_actionRead_Mode_triggered();
+
+    void on_actionShow_Unicode_Control_Chars_triggered();
+
+    void on_actionReselect_Chinese_triggered();
+
+    void on_actionPrefrence_triggered();
+
+    void on_actionPrint_triggered();
+
 private:
     void openFile(QString path);
     bool isModified() const;
