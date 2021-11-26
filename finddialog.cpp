@@ -14,7 +14,7 @@ FindDialog::FindDialog(QSettings &settings, QWidget *parent) :
     ui->replaceEdit->setText(settings.value("find/replaceText").toString());
     ui->caseSensitiveCheck->setChecked(settings.value("find/caseSensitive").toBool());
     ui->loopCheck->setChecked(settings.value("find/loop").toBool());
-    if (!settings.value("find/down").toBool())
+    if (!settings.value("find/down", true).toBool())
         ui->upRadio->setChecked(true);
 }
 
@@ -30,18 +30,20 @@ void FindDialog::open(bool replace)
     ui->replaceButton->setVisible(replace);
     ui->replaceAllButton->setVisible(replace);
     ui->groupBox->setVisible(!replace);
-    QDialog::open();
+    QDialog::show(); // open/exec会导致模态
+    ui->findEdit->setFocus();
+    ui->findEdit->selectAll();
     this->adjustSize();
 }
 
-const QString &&FindDialog::getFindText() const
+const QString FindDialog::getFindText() const
 {
-    return std::move(ui->findEdit->text());
+    return ui->findEdit->text();
 }
 
-const QString &&FindDialog::getReplaceText() const
+const QString FindDialog::getReplaceText() const
 {
-    return std::move(ui->replaceEdit->text());
+    return ui->replaceEdit->text();
 }
 
 bool FindDialog::isCaseSensitive() const
@@ -49,7 +51,7 @@ bool FindDialog::isCaseSensitive() const
     return ui->caseSensitiveCheck->isChecked();
 }
 
-bool FindDialog::isLoopFind() const
+bool FindDialog::isLoop() const
 {
     return ui->loopCheck->isChecked();
 }

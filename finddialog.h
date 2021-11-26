@@ -28,10 +28,10 @@ signals:
     void signalReplaceAll();
 
 public:
-    const QString &&getFindText() const;
-    const QString &&getReplaceText() const;
+    const QString getFindText() const;
+    const QString getReplaceText() const;
     bool isCaseSensitive() const;
-    bool isLoopFind() const;
+    bool isLoop() const;
 
 private slots:
     void on_findNextButton_clicked();

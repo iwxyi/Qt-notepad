@@ -133,10 +133,45 @@ void MainWindow::createFindDialog()
     connect(findDialog, &FindDialog::signalFindNext, this, &MainWindow::on_actionFind_Next_N_triggered);
     connect(findDialog, &FindDialog::signalFindPrev, this, &MainWindow::on_actionFind_Prev_V_triggered);
     connect(findDialog, &FindDialog::signalReplaceNext, this, [=]{
+        const QString& findText = findDialog->getFindText();
+        const QString& replaceText = findDialog->getReplaceText();
+        if (findText.isEmpty())
+            return ;
 
+        // 替换 逻辑上分为：查找、选中、替换
+        const QString& selectedText = ui->plainTextEdit->textCursor().selectedText();
+        if ((findDialog->isCaseSensitive() && selectedText != findText)
+                || selectedText.toLower() != findText.toLower())
+        {
+            // 如果选中的词不是findText，则查找下一个
+            on_actionFind_Next_N_triggered();
+            qInfo() << "查找：" << findText;
+        }
+        else
+        {
+            // 已选中，则替换选中的
+            QTextCursor tc = ui->plainTextEdit->textCursor();
+            tc.insertText(replaceText);
+            ui->plainTextEdit->setTextCursor(tc);
+            qInfo() << "替换：" << findText << "->" << replaceText;
+            on_actionFind_Next_N_triggered(); // 查找下一个
+        }
     });
     connect(findDialog, &FindDialog::signalReplaceAll, this, [=]{
+        const QString& findText = findDialog->getFindText();
+        const QString& replaceText = findDialog->getReplaceText();
+        if (findText.isEmpty())
+            return ;
+        qInfo() << "全部替换：" << findText << "->" << replaceText;
 
+        QString content = ui->plainTextEdit->toPlainText();
+        QTextCursor tc = ui->plainTextEdit->textCursor();
+        tc.setPosition(0);
+        tc.setPosition(content.length(), QTextCursor::KeepAnchor);
+        content.replace(findText, replaceText);
+        tc.insertText(content);
+        // ui->plainTextEdit->setTextCursor(tc);     // 不调用这句话，保留替换之前的位置
+        // ui->plainTextEdit->setPlainText(content); // 这个会导致无法撤销，而且会重置光标位置到开头
     });
 }
 
@@ -387,12 +422,44 @@ void MainWindow::on_actionFind_F_triggered()
 
 void MainWindow::on_actionFind_Next_N_triggered()
 {
+    const QString& text = findDialog->getFindText();
+    if (text.isEmpty())
+        return ;
 
+    QTextDocument::FindFlags flags;
+    if (findDialog->isCaseSensitive())
+        flags |= QTextDocument::FindCaseSensitively;
+    bool rst = ui->plainTextEdit->find(text, flags);
+    if (!rst && findDialog->isLoop()
+            && ui->plainTextEdit->toPlainText().contains(text)) // 没找到，尝试从头开始
+    {
+        qInfo() << "从开头查找";
+        QTextCursor tc = ui->plainTextEdit->textCursor();
+        tc.setPosition(0);
+        ui->plainTextEdit->setTextCursor(tc);
+        on_actionFind_Next_N_triggered();
+    }
 }
 
 void MainWindow::on_actionFind_Prev_V_triggered()
 {
+    const QString& text = findDialog->getFindText();
+    if (text.isEmpty())
+        return ;
 
+    QTextDocument::FindFlags flags = QTextDocument::FindBackward;
+    if (findDialog->isCaseSensitive())
+        flags |= QTextDocument::FindCaseSensitively;
+    bool rst = ui->plainTextEdit->find(text, flags);
+    if (!rst && findDialog->isLoop()
+            && ui->plainTextEdit->toPlainText().contains(text))
+    {
+        qInfo() << "从末尾查找";
+        QTextCursor tc = ui->plainTextEdit->textCursor();
+        tc.setPosition(ui->plainTextEdit->toPlainText().length());
+        ui->plainTextEdit->setTextCursor(tc);
+        on_actionFind_Prev_V_triggered();
+    }
 }
 
 void MainWindow::on_actionReplace_R_triggered()
