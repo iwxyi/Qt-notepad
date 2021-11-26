@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QLabel>
+#include "finddialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,7 +16,7 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
 
 private slots:
     void on_plainTextEdit_textChanged();
@@ -65,11 +66,22 @@ private slots:
 
     void on_plainTextEdit_cursorPositionChanged();
 
+    void on_actionFind_F_triggered();
+
+    void on_actionFind_Next_N_triggered();
+
+    void on_actionFind_Prev_V_triggered();
+
+    void on_actionReplace_R_triggered();
+
+    void on_actionGoto_G_triggered();
+
 private:
     void openFile(QString path);
     bool isModified() const;
     bool askSave();
     void updateWindowTitle();
+    void createFindDialog();
 
 protected:
     void closeEvent(QCloseEvent* e) override;
@@ -87,5 +99,8 @@ private:
     QLabel* zoomLabel;
     QLabel* lineLabel;
     QLabel* codecLabel;
+
+    FindDialog* findDialog = nullptr;
+    // QString findText;
 };
 #endif // MAINWINDOW_H

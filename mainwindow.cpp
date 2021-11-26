@@ -115,6 +115,31 @@ void MainWindow::updateWindowTitle()
     this->setWindowTitle((isModified() ? "*" : "") + fileName + " - 记事本");
 }
 
+void MainWindow::createFindDialog()
+{
+    findDialog = new FindDialog(settings, this);
+
+    connect(findDialog, &FindDialog::signalShow, this, [=]{
+        ui->actionFind_Next_N->setEnabled(true);
+        ui->actionFind_Prev_V->setEnabled(true);
+    });
+    connect(findDialog, &FindDialog::signalHide, this, [=]{
+        ui->actionFind_Next_N->setEnabled(false);
+        ui->actionFind_Prev_V->setEnabled(false);
+    });
+    /* connect(findDialog, &FindDialog::signalTextChanged, this, [=](const QString& text){
+        this->findText = text;
+    }); */
+    connect(findDialog, &FindDialog::signalFindNext, this, &MainWindow::on_actionFind_Next_N_triggered);
+    connect(findDialog, &FindDialog::signalFindPrev, this, &MainWindow::on_actionFind_Prev_V_triggered);
+    connect(findDialog, &FindDialog::signalReplaceNext, this, [=]{
+
+    });
+    connect(findDialog, &FindDialog::signalReplaceAll, this, [=]{
+
+    });
+}
+
 void MainWindow::closeEvent(QCloseEvent *e)
 {
     if (!askSave())
@@ -349,4 +374,37 @@ void MainWindow::on_plainTextEdit_cursorPositionChanged()
     int col = tc.columnNumber(); // 第几列
     // int row = tc.blockNumber(); // 第几段，无法识别WordWrap的第几行
     posLabel->setText("第 " + QString::number(line + 1) + " 行，第 " + QString::number(col + 1) + " 列");
+}
+
+void MainWindow::on_actionFind_F_triggered()
+{
+    if (!findDialog)
+    {
+        createFindDialog();
+    }
+    findDialog->open(false);
+}
+
+void MainWindow::on_actionFind_Next_N_triggered()
+{
+
+}
+
+void MainWindow::on_actionFind_Prev_V_triggered()
+{
+
+}
+
+void MainWindow::on_actionReplace_R_triggered()
+{
+    if (!findDialog)
+    {
+        createFindDialog();
+    }
+    findDialog->open(true);
+}
+
+void MainWindow::on_actionGoto_G_triggered()
+{
+
 }
