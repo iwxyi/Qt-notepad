@@ -457,7 +457,7 @@ void MainWindow::on_actionFind_F_triggered()
     {
         createFindDialog();
     }
-    findDialog->open(false);
+    findDialog->openFind(false);
 }
 
 void MainWindow::on_actionFind_Next_N_triggered()
@@ -508,7 +508,7 @@ void MainWindow::on_actionReplace_R_triggered()
     {
         createFindDialog();
     }
-    findDialog->open(true);
+    findDialog->openFind(true);
 }
 
 void MainWindow::on_actionGoto_G_triggered()

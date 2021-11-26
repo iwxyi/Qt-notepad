@@ -190,6 +190,9 @@
    </property>
   </action>
   <action name="actionUndo_U">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>撤销(&amp;U)</string>
    </property>
@@ -198,6 +201,9 @@
    </property>
   </action>
   <action name="actionCut_T">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>剪切(&amp;T)</string>
    </property>
@@ -206,6 +212,9 @@
    </property>
   </action>
   <action name="actionCopy_C">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>复制(&amp;C)</string>
    </property>
@@ -222,6 +231,9 @@
    </property>
   </action>
   <action name="actionDelete_L">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>删除(&amp;L)</string>
    </property>
@@ -230,6 +242,9 @@
    </property>
   </action>
   <action name="actionSearch_By_Bing">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>使用 Bing 搜索...</string>
    </property>
@@ -239,7 +254,7 @@
   </action>
   <action name="actionFind_F">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>查找(&amp;F)</string>
@@ -272,7 +287,7 @@
   </action>
   <action name="actionReplace_R">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>替换(&amp;R)</string>

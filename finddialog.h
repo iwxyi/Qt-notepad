@@ -16,7 +16,7 @@ public:
     explicit FindDialog(QSettings& settings, QWidget *parent = nullptr);
     ~FindDialog() override;
 
-    void open(bool replace);
+    void openFind(bool replace);
 
 signals:
     void signalShow();

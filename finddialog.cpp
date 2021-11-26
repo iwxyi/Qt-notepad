@@ -23,7 +23,7 @@ FindDialog::~FindDialog()
     delete ui;
 }
 
-void FindDialog::open(bool replace)
+void FindDialog::openFind(bool replace)
 {
     ui->label_3->setVisible(replace);
     ui->replaceEdit->setVisible(replace);
