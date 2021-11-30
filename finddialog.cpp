@@ -34,6 +34,11 @@ void FindDialog::openFind(bool replace)
     ui->findEdit->setFocus();
     ui->findEdit->selectAll();
     this->adjustSize();
+
+    if (!replace)
+        setWindowTitle("查找");
+    else
+        setWindowTitle("替换");
 }
 
 const QString FindDialog::getFindText() const

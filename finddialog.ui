@@ -6,14 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>369</width>
-    <height>188</height>
+    <width>462</width>
+    <height>214</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>查找</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="leftMargin">
+    <number>6</number>
+   </property>
+   <property name="topMargin">
+    <number>12</number>
+   </property>
+   <property name="rightMargin">
+    <number>6</number>
+   </property>
+   <property name="bottomMargin">
+    <number>12</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <property name="rightMargin">
@@ -29,6 +41,9 @@
        </property>
        <item>
         <layout class="QFormLayout" name="formLayout">
+         <property name="verticalSpacing">
+          <number>9</number>
+         </property>
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -44,22 +59,42 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>查找内容(&amp;N):</string>
+            <string>查找内容(N):</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="findEdit"/>
+          <widget class="QLineEdit" name="findEdit">
+           <property name="minimumSize">
+            <size>
+             <width>220</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">padding: 3px;</string>
+           </property>
+          </widget>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>替换为(&amp;P):</string>
+            <string>替换为(P):</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="replaceEdit"/>
+          <widget class="QLineEdit" name="replaceEdit">
+           <property name="minimumSize">
+            <size>
+             <width>220</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">padding: 3px;</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -69,6 +104,9 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QPushButton" name="findNextButton">
+         <property name="styleSheet">
+          <string notr="true">padding: 6px;</string>
+         </property>
          <property name="text">
           <string>查找下一个(&amp;F)</string>
          </property>
@@ -76,6 +114,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="replaceButton">
+         <property name="styleSheet">
+          <string notr="true">padding: 6px;</string>
+         </property>
          <property name="text">
           <string>替换(&amp;R)</string>
          </property>
@@ -83,6 +124,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="replaceAllButton">
+         <property name="styleSheet">
+          <string notr="true">padding: 6px;</string>
+         </property>
          <property name="text">
           <string>全部替换(&amp;A)</string>
          </property>
@@ -90,6 +134,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="cancelButton">
+         <property name="styleSheet">
+          <string notr="true">padding: 6px;</string>
+         </property>
          <property name="text">
           <string>取消</string>
          </property>
